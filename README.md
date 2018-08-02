@@ -1,16 +1,17 @@
-# librato-api
+# appoptics-api
 
 [![npm version](http://img.shields.io/npm/v/librato-api.svg)](https://npmjs.org/package/librato-api)
 [![Build Status](https://travis-ci.org/emartech/librato-api.svg?branch=master)](https://travis-ci.org/emartech/librato-api)
 [![Coverage Status](https://coveralls.io/repos/github/emartech/librato-api/badge.svg?branch=master)](https://coveralls.io/github/emartech/librato-api?branch=master)
 [![Dependencies Status](https://david-dm.org/emartech/librato-api.svg)](https://david-dm.org/emartech/librato-api)
 
-This package allows you to manage your Librato backend configuration and query time series data,
-but it is not intended to submit metric data. There are other packages doing that
+#### This project is a WIP 
+
+This package allows you to manage your AppOptics *metrics* backend configuration and query time series data, but it is not intended to submit metric data. There are other packages doing that
 in a better way.
 
-For a full description of the Librato API see the official
-[Librato API](https://www.librato.com/docs/api/) documentation.
+For a full description of the AppOptics API see the official
+[AppOptics API](https://docs.appoptics.com/api/) documentation.
 
 At the moment support for the following sections is implemented:
 Authentication, Pagination, Metrics, Spaces, Charts, Alerts, Services, Sources.
@@ -23,59 +24,58 @@ This is easy to fix, pull requests are welcome.
 ## Examples
 ```javascript
 // the package is a ready to use client,
-// using LIBRATO_USER and LIBRATO_TOKEN from the process environment
-const libratoApi = require('librato-api')
+// using AppOpticsToken from the process environment
+const AppOpticsApi = require('appoptics-api')
 
 // it's also possible to create a client with custom config (all properties are optional)
-const LibratoApi = require('librato-api').LibratoAPI
-const libratoApi = new LibratoAPI({
+const AppOpticsApi = require('appoptics-api').AppOpticsApi
+const AppOpticsApi = new AppOpticsApi({
     serviceUrl: 'https://...',
-    auth: { user: '...', pass: '...' },
+    auth: { pass: '...' },
     logger: ...,
     request: ...
 })
 
 // all methods return Promises
-libratoApi.getMetrics().then(console.log)
+AppOpticsApi.getMetrics().then(console.log)
 
 // most methods support an options object which is passed to request-promise
-libratoApi.getMetrics({ qs: { offset: 200, limit: 100 } })
+AppOpticsApi.getMetrics({ qs: { offset: 200, limit: 100 } })
 
 // iterates over pagination
-libratoApi.getAllMetrics()
+AppOpticsApi.getAllMetrics()
 
 // get a metric definition
-libratoApi.getMetric('router.bytes')
+AppOpticsApi.getMetric('router.bytes')
 
 // retrieve one page of time series data for metric and time frame
-libratoApi.getMetric('router.bytes', { qs: { start_time: date1, end_time: date2 }})
+AppOpticsApi.getMetric('router.bytes', { qs: { start_time: date1, end_time: date2 }})
 
 // retrieve all pages of time series data for metric and time frame
-libratoApi.getAllMeasurements('router.bytes', { qs: { start_time: date1, end_time: date2 }})
+AppOpticsApi.getAllMeasurements('router.bytes', { qs: { start_time: date1, end_time: date2 }})
 
 // update metric definition
-libratoApi.putMetric('customers', { 'period': 3600 })
+AppOpticsApi.putMetric('customers', { 'period': 3600 })
 
 // use custom space finder (getSpace requires id)
-libratoApi.findSpaceByName('myspace')
+AppOpticsApi.findSpaceByName('myspace')
 
 // update chart definition in a space
-libratoApi.putChart(myspace.id, mychartId, mychart)
+AppOpticsApi.putChart(myspace.id, mychartId, mychart)
 
 // not everything is explicitly supported yet, but generic api requests are easy to do
-libratoApi.apiRequest(['annotation', 'backup'], { method: 'PUT', body: { ... } })
+AppOpticsApi.apiRequest(['annotation', 'backup'], { method: 'PUT', body: { ... } })
 ```
 
 ## CLI Tool
 
-This package installs a CLI tool named "librato" into your global or package bin-dir.
+This package installs a CLI tool named "appoptics" into your global or package bin-dir.
 
-You have to export LIBRATO_USER and LIBRATO_TOKEN for authentication to work.
+You have to export APPOPTICS_TOKEN for authentication to work.
 ```bash
-export LIBRATO_USER='...'
-export LIBRATO_TOKEN='...'
-librato help
-librato list-metrics
+export APPOPTICS_TOKEN='...'
+appoptics help
+appoptics list-metrics
 ...
 ```
 
@@ -88,12 +88,12 @@ integrated help, etc. To see what it's doing it may be helpful to set LOG_LEVEL 
 
 Apart from functions which model single API calls, the tool can take a local directory
 containing json or js files in a certain structure and apply the contained elements to
-a Librato account with the "update-from-dir" command. The repository contains an example directory
+a AppOptics account with the "update-from-dir" command. The repository contains an example directory
 "example-config" which demonstrates this feature.
 
 Note that all elements are referenced by
 their name (or title for alerts), even if the API usually handles them with a numeric id.
-This way generic configuration can be applied to multiple Librato accounts, but uniquness
+This way generic configuration can be applied to multiple AppOptics accounts, but uniquness
 of names etc. is assumed.
 
 There is a simple templating feature to create serieses of similar metrics. The "show-config-dir"
