@@ -27,7 +27,7 @@ const AppOpticsApi = require('appoptics-api')
 
 // it's also possible to create a client with custom config (all properties are optional)
 const AppOpticsApi = require('appoptics-api').AppOpticsApi
-const AppOpticsApi = new AppOpticsAPI({
+const AppOpticsApi = new AppOpticsApi({
     serviceUrl: 'https://...',
     auth: { pass: '...' },
     logger: ...,
@@ -35,34 +35,34 @@ const AppOpticsApi = new AppOpticsAPI({
 })
 
 // all methods return Promises
-AppOpticsAPI.getMetrics().then(console.log)
+AppOpticsApi.getMetrics().then(console.log)
 
 // most methods support an options object which is passed to request-promise
-AppOpticsAPI.getMetrics({ qs: { offset: 200, limit: 100 } })
+AppOpticsApi.getMetrics({ qs: { offset: 200, limit: 100 } })
 
 // iterates over pagination
-AppOpticsAPI.getAllMetrics()
+AppOpticsApi.getAllMetrics()
 
 // get a metric definition
-AppOpticsAPI.getMetric('router.bytes')
+AppOpticsApi.getMetric('router.bytes')
 
 // retrieve one page of time series data for metric and time frame
-AppOpticsAPI.getMetric('router.bytes', { qs: { start_time: date1, end_time: date2 }})
+AppOpticsApi.getMetric('router.bytes', { qs: { start_time: date1, end_time: date2 }})
 
 // retrieve all pages of time series data for metric and time frame
-AppOpticsAPI.getAllMeasurements('router.bytes', { qs: { start_time: date1, end_time: date2 }})
+AppOpticsApi.getAllMeasurements('router.bytes', { qs: { start_time: date1, end_time: date2 }})
 
 // update metric definition
-AppOpticsAPI.putMetric('customers', { 'period': 3600 })
+AppOpticsApi.putMetric('customers', { 'period': 3600 })
 
 // use custom space finder (getSpace requires id)
-AppOpticsAPI.findSpaceByName('myspace')
+AppOpticsApi.findSpaceByName('myspace')
 
 // update chart definition in a space
-AppOpticsAPI.putChart(myspace.id, mychartId, mychart)
+AppOpticsApi.putChart(myspace.id, mychartId, mychart)
 
 // not everything is explicitly supported yet, but generic api requests are easy to do
-AppOpticsAPI.apiRequest(['annotation', 'backup'], { method: 'PUT', body: { ... } })
+AppOpticsApi.apiRequest(['annotation', 'backup'], { method: 'PUT', body: { ... } })
 ```
 
 ## CLI Tool

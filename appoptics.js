@@ -56,19 +56,19 @@ function readConfigDir (configDir) {
 
 function * listMetrics (maybeSink) {
   logger.verbose('listMetrics', { to: maybeSink })
-  const metrics = yield AppOpticsAPI.getAllMetrics()
+  const metrics = yield AppOpticsApi.getAllMetrics()
   yield writeJson(maybeSink, getNames(metrics))
 }
 
 function * getMetrics (maybeSink) {
   logger.verbose('getMetrics', { to: maybeSink })
-  const metrics = yield AppOpticsAPI.getAllMetrics()
+  const metrics = yield AppOpticsApi.getAllMetrics()
   yield writeJson(maybeSink, metrics)
 }
 
 function * getMetric (name, maybeSink) {
   logger.verbose('getMetric', { name, to: maybeSink })
-  const metric = yield AppOpticsAPI.getMetric(name)
+  const metric = yield AppOpticsApi.getMetric(name)
   yield writeJson(maybeSink, metric)
 }
 
@@ -76,13 +76,13 @@ function * getMetric (name, maybeSink) {
 
 function * listSpaces (maybeSink) {
   logger.verbose('listSpaces', { to: maybeSink })
-  const spaces = yield AppOpticsAPI.getAllSpaces()
+  const spaces = yield AppOpticsApi.getAllSpaces()
   yield writeJson(maybeSink, getNamesById(spaces))
 }
 
 function * dumpSpace (name, maybeSink) {
   logger.verbose('dumpSpace', { space: name, to: maybeSink })
-  const space = yield AppOpticsAPI.dumpSpace(name)
+  const space = yield AppOpticsApi.dumpSpace(name)
   yield writeJson(maybeSink, space)
 }
 
@@ -90,39 +90,39 @@ function * createOrUpdateSpace (maybeSource) {
   logger.verbose('createOrUpdateSpace', { from: maybeSource })
   const space = yield readJson(maybeSource)
   logger.debug('space definition', { space })
-  yield AppOpticsAPI.createOrUpdateSpace(space)
+  yield AppOpticsApi.createOrUpdateSpace(space)
 }
 
 function * deleteSpace (name) {
   logger.verbose('deleteSpace', { space: name })
-  const space = yield AppOpticsAPI.findSpaceByName(name)
-  yield AppOpticsAPI.deleteSpace(space.id)
+  const space = yield AppOpticsApi.findSpaceByName(name)
+  yield AppOpticsApi.deleteSpace(space.id)
 }
 
 // -- alert actions
 
 function * listAlerts (maybeSink) {
   logger.verbose('listAlerts', { to: maybeSink })
-  const alerts = yield AppOpticsAPI.getAllAlerts()
+  const alerts = yield AppOpticsApi.getAllAlerts()
   yield writeJson(maybeSink, getNamesById(alerts))
 }
 
 function * getAlerts (maybeSink) {
   logger.verbose('getAlerts', { to: maybeSink })
-  const alerts = yield AppOpticsAPI.getAllAlerts()
+  const alerts = yield AppOpticsApi.getAllAlerts()
   yield writeJson(maybeSink, alerts)
 }
 
 function * getAlertsStatus (maybeSink) {
   logger.verbose('getAlertsStatus', { to: maybeSink })
-  const status = yield AppOpticsAPI.getAlertsStatus()
+  const status = yield AppOpticsApi.getAlertsStatus()
   yield writeJson(maybeSink, status)
 }
 
 function * getAlert (idOrName, maybeSink) {
   logger.verbose('getAlert', { idOrName, to: maybeSink })
-  const alert = yield AppOpticsAPI.getAlert(idOrName)
-    .catch(_err => AppOpticsAPI.findAlertByName(idOrName))
+  const alert = yield AppOpticsApi.getAlert(idOrName)
+    .catch(_err => AppOpticsApi.findAlertByName(idOrName))
   yield writeJson(maybeSink, alert)
 }
 
@@ -130,20 +130,20 @@ function * getAlert (idOrName, maybeSink) {
 
 function * listServices (maybeSink) {
   logger.verbose('listServices', { to: maybeSink })
-  const services = yield AppOpticsAPI.getAllServices()
+  const services = yield AppOpticsApi.getAllServices()
   yield writeJson(maybeSink, getTitlesById(services))
 }
 
 function * getServices (maybeSink) {
   logger.verbose('getServices', { to: maybeSink })
-  const services = yield AppOpticsAPI.getAllServices()
+  const services = yield AppOpticsApi.getAllServices()
   yield writeJson(maybeSink, services)
 }
 
 function * getService (idOrTitle, maybeSink) {
   logger.verbose('getService', { idOrTitle, to: maybeSink })
-  const service = yield AppOpticsAPI.getService(idOrTitle)
-    .catch(_err => AppOpticsAPI.findServiceByTitle(idOrTitle))
+  const service = yield AppOpticsApi.getService(idOrTitle)
+    .catch(_err => AppOpticsApi.findServiceByTitle(idOrTitle))
   yield writeJson(maybeSink, service)
 }
 
@@ -151,19 +151,19 @@ function * getService (idOrTitle, maybeSink) {
 
 function * listSources (maybeSink) {
   logger.verbose('listSources', { to: maybeSink })
-  const sources = yield AppOpticsAPI.getAllSources()
+  const sources = yield AppOpticsApi.getAllSources()
   yield writeJson(maybeSink, getNames(sources))
 }
 
 function * getSources (maybeSink) {
   logger.verbose('getSources', { to: maybeSink })
-  const sources = yield AppOpticsAPI.getAllSources()
+  const sources = yield AppOpticsApi.getAllSources()
   yield writeJson(maybeSink, sources)
 }
 
 function * getSource (name, maybeSink) {
   logger.verbose('getSource', { name, to: maybeSink })
-  const source = yield AppOpticsAPI.getSource(name)
+  const source = yield AppOpticsApi.getSource(name)
   yield writeJson(maybeSink, source)
 }
 
@@ -172,7 +172,7 @@ function * getSource (name, maybeSink) {
 function * showConfigDir (configDir, maybeSink) {
   logger.verbose('showConfigDir', { configDir, to: maybeSink })
   const rawConfig = readConfigDir(configDir)
-  const config = AppOpticsAPI._processRawConfig(rawConfig)
+  const config = AppOpticsApi._processRawConfig(rawConfig)
   yield writeJson(maybeSink, config)
 }
 
@@ -186,13 +186,13 @@ function * showRawConfigDir (configDir, maybeSink) {
  * @Note Some updates are silently ignored, e.g. trying to change a metric's
  * l2met_type or created_by_ua. This is just how the API works.
  *
- * @TODO move applying the config from here to AppOpticsAPI,
+ * @TODO move applying the config from here to AppOpticsApi,
  *  collect errors like in createOrUpdateSpace, and provide tests.
  */
 function * updateFromDir (configDir) {
   logger.verbose('updateFromDir', { configDir })
   const rawConfig = readConfigDir(configDir)
-  const config = AppOpticsAPI._processRawConfig(rawConfig)
+  const config = AppOpticsApi._processRawConfig(rawConfig)
 
   let errorCount = 0
   const logOK = (what, id) => _result => {
@@ -219,35 +219,35 @@ function * updateFromDir (configDir) {
     action.then(logOK(what, id), ignore404(what, id)).catch(logAndCountError(what, id))
 
   const deleteMetric = name =>
-    withLoggingIgnore404('delete metric', name, AppOpticsAPI.deleteMetric(name))
+    withLoggingIgnore404('delete metric', name, AppOpticsApi.deleteMetric(name))
   const deleteSpace = name =>
     withLoggingIgnore404(
       'delete space', name,
-      AppOpticsAPI.findSpaceByName(name).then(getId).then(id => AppOpticsAPI.deleteSpace(id))
+      AppOpticsApi.findSpaceByName(name).then(getId).then(id => AppOpticsApi.deleteSpace(id))
     )
   const deleteAlert = name =>
     withLoggingIgnore404(
       'delete alert', name,
-      AppOpticsAPI.findAlertByName(name).then(getId).then(id => AppOpticsAPI.deleteAlert(id))
+      AppOpticsApi.findAlertByName(name).then(getId).then(id => AppOpticsApi.deleteAlert(id))
     )
   const deleteService = name =>
     withLoggingIgnore404(
       'delete service', name,
-      AppOpticsAPI.findServiceByTitle(name).then(getId).then(id => AppOpticsAPI.deleteService(id))
+      AppOpticsApi.findServiceByTitle(name).then(getId).then(id => AppOpticsApi.deleteService(id))
     )
   const deleteSource = name =>
-    withLoggingIgnore404('delete source', name, AppOpticsAPI.deleteSource(name))
+    withLoggingIgnore404('delete source', name, AppOpticsApi.deleteSource(name))
 
   const updateMetric = metric =>
-    withLogging('update metric', metric.name, AppOpticsAPI.putMetric(metric.name, metric))
+    withLogging('update metric', metric.name, AppOpticsApi.putMetric(metric.name, metric))
   const updateSpace = space =>
-    withLogging('update space', space.name, AppOpticsAPI.createOrUpdateSpace(space))
+    withLogging('update space', space.name, AppOpticsApi.createOrUpdateSpace(space))
   const updateAlert = alert =>
-    withLogging('update alert', alert.name, AppOpticsAPI.createOrUpdateAlert(alert))
+    withLogging('update alert', alert.name, AppOpticsApi.createOrUpdateAlert(alert))
   const updateService = service =>
-    withLogging('update service', service.title, AppOpticsAPI.createOrUpdateService(service))
+    withLogging('update service', service.title, AppOpticsApi.createOrUpdateService(service))
   const updateSource = source =>
-    withLogging('update source', source.name, AppOpticsAPI.putSource(source.name, source))
+    withLogging('update source', source.name, AppOpticsApi.putSource(source.name, source))
 
   // deletes first
   yield {

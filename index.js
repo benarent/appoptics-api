@@ -27,7 +27,7 @@ const resultOrNoSuch = _.curry((what, name, obj) => _.isUndefined(obj) ? noSuch(
  *   - serviceUrl (String): the base of the service URL
  *   - auth (object): passed to the underlying request handler in each request
  *   - request: the underlying request-promise object, may be used to set defaults
- *   - logger: use a custom logger, else try winston.loggers.AppOpticsAPI or root winston
+ *   - logger: use a custom logger, else try winston.loggers.AppOpticsApi or root winston
  *
  * @see https://docs.appoptics.com/api/?shell#
  *
@@ -739,8 +739,8 @@ AppOpticsApi.prototype.compositeDSL = {
 }
 
 /**
- * At the root this package is a ready to use AppOpticsAPI instance with default options.
- * For use cases requiring more flexibility the class constructor is exported as AppOpticsAPI.
+ * At the root this package is a ready to use AppOpticsApi instance with default options.
+ * For use cases requiring more flexibility the class constructor is exported as AppOpticsApi.
  */
 module.exports = new AppOpticsApi()
 module.exports.AppOpticsApi = AppOpticsApi
