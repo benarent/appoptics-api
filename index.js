@@ -16,7 +16,7 @@ const noSuch = (what, name) => { throw new StatusCodeError(404, `no ${what} name
 const resultOrNoSuch = _.curry((what, name, obj) => _.isUndefined(obj) ? noSuch(what, name) : obj)
 
 /**
- * An API client for the Librato (management) API.
+ * An API client for the Appoptics (management) API.
  *
  * Unless overridden by options this will pick up LIBRATO_USER and LIBRATO_TOKEN from
  * the process environment (this works out of the box on Heroku).
@@ -29,20 +29,20 @@ const resultOrNoSuch = _.curry((what, name, obj) => _.isUndefined(obj) ? noSuch(
  *   - request: the underlying request-promise object, may be used to set defaults
  *   - logger: use a custom logger, else try winston.loggers.AppOpticsAPI or root winston
  *
- * @see https://www.librato.com/docs/api/?shell#introduction
+ * @see https://docs.appoptics.com/api/?shell#
  *
  * @TODO The API is only partially covered, and there is no long running jobs support yet.
  *
  * @author Jürgen Strobel <juergen.strobel@emarsys.com>
  */
-class AppOpticsAPI {
+class AppOpticsApi {
 
   constructor (options) {
     const o = options || {}
     this.serviceUrl = o.serviceUrl || 'https://api.appoptics.com/v1/metrics'
     this.auth = o.auth || { pass: process.env.APPOPTICS_TOKEN }
     this.request = o.request || request
-    this.logger = o.logger || winston.loggers.AppOpticsAPI || winston
+    this.logger = o.logger || winston.loggers.AppOpticsApi || winston
   }
 
   // *** straight API calls ***
@@ -74,15 +74,15 @@ class AppOpticsAPI {
       opts2 || {}
     )
     const logResult = result => {
-      this.logger.silly('AppOpticsAPI#apiRequest result', { result, requestId })
+      this.logger.silly('AppOpticsApi#apiRequest result', { result, requestId })
       return result
     }
     const logErrorRethrow = error => {
-      this.logger.silly('AppOpticsAPI#apiRequest error', { error, requestId })
+      this.logger.silly('AppOpticsApi#apiRequest error', { error, requestId })
       throw error
     }
 
-    this.logger.debug('AppOpticsAPI#apiRequest', { path, opts, opts2, requestId })
+    this.logger.debug('AppOpticsApi#apiRequest', { path, opts, opts2, requestId })
     return this.request(options).then(logResult).catch(logErrorRethrow)
   }
 
@@ -675,14 +675,14 @@ class AppOpticsAPI {
 }
 
 // annotations required by getAllPaginated
-AppOpticsAPI.prototype.getMetrics.resultPath = 'metrics'
-AppOpticsAPI.prototype.getSpaces.resultPath = 'spaces'
-AppOpticsAPI.prototype.getAlerts.resultPath = 'alerts'
-AppOpticsAPI.prototype.getServices.resultPath = 'services'
-AppOpticsAPI.prototype.getSources.resultPath = 'sources'
+AppOpticsApi.prototype.getMetrics.resultPath = 'metrics'
+AppOpticsApi.prototype.getSpaces.resultPath = 'spaces'
+AppOpticsApi.prototype.getAlerts.resultPath = 'alerts'
+AppOpticsApi.prototype.getServices.resultPath = 'services'
+AppOpticsApi.prototype.getSources.resultPath = 'sources'
 
 // annotations required by getAllPaginatedKeyset
-AppOpticsAPI.prototype.getMetric.resultPath = 'measurements'
+AppOpticsApi.prototype.getMetric.resultPath = 'measurements'
 
 const renderCompositeOptions = options => {
   const optVals = _(options || {}).keys().map(k => `${k}:"${options[k]}"`).join(', ')
@@ -690,7 +690,7 @@ const renderCompositeOptions = options => {
 }
 
 /**
- * Render a named Librato composite expression function
+ * Render a named AppOptics composite expression function
  * with the common one-or-set-and-options argument pattern.
  * To ease partial application the first argument is separated.
  */
@@ -705,17 +705,18 @@ const series = (name, source, options) =>
   `s("${name}", "${source || '%'}"${renderCompositeOptions(options)})`
 
 /**
- * Librato composite metrics mini-DSL.
+ * AppOptics composite metrics mini-DSL.
  *
- * The functions here output (nicely) formatted string representations of Librato composite metric
- * expressions of the same name. Librato set arguments are represented by javascript Arrays, and
+ * The functions here output (nicely) formatted string representations of AppOptics composite metric
+ * expressions of the same name. AppOptics set arguments are represented by javascript Arrays, and
  * the options dictionary is a plain object or missing/undefined.
  *
  * The source argument of series defaults to "%" (dynamic source).
+ * Note: Needs Tag Supports 
  *
  * There is no validation in regard to set arity or allowed options.
  */
-AppOpticsAPI.prototype.compositeDSL = {
+AppOpticsApi.prototype.compositeDSL = {
   series,
   s: series,
   renderCompositeFn,
@@ -741,5 +742,5 @@ AppOpticsAPI.prototype.compositeDSL = {
  * At the root this package is a ready to use AppOpticsAPI instance with default options.
  * For use cases requiring more flexibility the class constructor is exported as AppOpticsAPI.
  */
-module.exports = new AppOpticsAPI()
-module.exports.AppOpticsAPI = AppOpticsAPI
+module.exports = new AppOpticsApi()
+module.exports.AppOpticsApi = AppOpticsApi

@@ -8,10 +8,10 @@ const path = require('path')
 const requireDir = require('require-dir')
 const winston = require('winston')
 
-const AppOpticsAPI = require('./index').AppOpticsAPI
+const AppOpticsApi = require('./index').AppOpticsApi
 
 const logger = new winston.Logger({
-  level: process.env.LIBRATO_LOG_LEVEL || process.env.LOG_LEVEL || 'info',
+  level: process.env.APPOPTICS_LOG_LEVEL || process.env.LOG_LEVEL || 'info',
   transports: [
     new winston.transports.Console({
       stderrLevels: _.keys(winston.levels),
@@ -21,7 +21,7 @@ const logger = new winston.Logger({
     })
   ]
 })
-const AppOpticsAPI = new AppOpticsAPI({ logger })
+const AppOpticsApi = new AppOpticsApi({ logger })
 
 const getId = _.get('id')
 const getNames = _.map('name')
@@ -304,7 +304,7 @@ const actions = {
 }
 
 /**
- * CLI tool to manage Librato backend configuration.
+ * CLI tool to manage AppOptics backend configuration.
  *
  * @author Jürgen Strobel <juergen.strobel@emarsys.com>
  */

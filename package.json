@@ -1,7 +1,7 @@
 {
-  "name": "librato-api",
-  "version": "1.2.8",
-  "description": "A Librato backend API client library and a simple CLI tool.",
+  "name": "appoptics-api",
+  "version": "0.0.1",
+  "description": "An AppOptics backend API client library and a simple CLI tool.",
   "main": "index.js",
   "scripts": {
     "prepare": "npm test && npm run eslint && npm run coverage && npm run coverage-check",
@@ -14,13 +14,14 @@
     "coverage-coveralls": "coveralls < coverage/lcov.info"
   },
   "bin": {
-    "librato": "./librato.js"
+    "appoptics": "./appoptics.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/emartech/librato-api.git"
   },
   "keywords": [
+    "appoptics",
     "librato",
     "api",
     "cli"
@@ -38,13 +39,14 @@
   },
   "homepage": "https://www.npmjs.com/package/librato-api",
   "dependencies": {
+    "clean": "^4.0.2",
     "co": "^4.6.0",
     "js-combinatorics": "^0.5.3",
     "lodash": "^4.17.10",
     "mz": "^2.6.0",
     "request-promise": "^4.2.2",
     "require-dir": "^1.0.0",
-    "uuid": "^3.2.1",
+    "uuid": "^3.3.2",
     "winston": "^2.4.3"
   },
   "devDependencies": {

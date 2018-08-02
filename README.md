@@ -5,12 +5,11 @@
 [![Coverage Status](https://coveralls.io/repos/github/emartech/librato-api/badge.svg?branch=master)](https://coveralls.io/github/emartech/librato-api?branch=master)
 [![Dependencies Status](https://david-dm.org/emartech/librato-api.svg)](https://david-dm.org/emartech/librato-api)
 
-This package allows you to manage your Librato backend configuration and query time series data,
-but it is not intended to submit metric data. There are other packages doing that
+This package allows you to manage your AppOptics *metrics* backend configuration and query time series data, but it is not intended to submit metric data. There are other packages doing that
 in a better way.
 
-For a full description of the Librato API see the official
-[Librato API](https://www.librato.com/docs/api/) documentation.
+For a full description of the AppOptics API see the official
+[AppOptics API](https://docs.appoptics.com/api/) documentation.
 
 At the moment support for the following sections is implemented:
 Authentication, Pagination, Metrics, Spaces, Charts, Alerts, Services, Sources.
@@ -23,14 +22,14 @@ This is easy to fix, pull requests are welcome.
 ## Examples
 ```javascript
 // the package is a ready to use client,
-// using LIBRATO_USER and LIBRATO_TOKEN from the process environment
-const AppOpticsAPI = require('librato-api')
+// using AppOpticsToken from the process environment
+const AppOpticsApi = require('appoptics-api')
 
 // it's also possible to create a client with custom config (all properties are optional)
-const AppOpticsAPI = require('librato-api').AppOpticsAPI
-const AppOpticsAPI = new AppOpticsAPI({
+const AppOpticsApi = require('appoptics-api').AppOpticsApi
+const AppOpticsApi = new AppOpticsAPI({
     serviceUrl: 'https://...',
-    auth: { user: '...', pass: '...' },
+    auth: { pass: '...' },
     logger: ...,
     request: ...
 })
