@@ -39,8 +39,8 @@ class AppOpticsApi {
 
   constructor (options) {
     const o = options || {}
-    this.serviceUrl = o.serviceUrl || 'https://api.appoptics.com/v1/metrics'
-    this.auth = o.auth || { pass: process.env.APPOPTICS_TOKEN }
+    this.serviceUrl = o.serviceUrl || 'https://api.appoptics.com/v1'
+    this.auth = o.auth ||  { user: '', pass: process.env.APPOPTICS_TOKEN }
     this.request = o.request || request
     this.logger = o.logger || winston.loggers.AppOpticsApi || winston
   }
@@ -55,7 +55,7 @@ class AppOpticsApi {
    *
    * Returns a promise as created by request-promise. Many other methods call this one
    * eventually and return its result directly, so you should expect to get the errors,
-   * result wrappers for pagination and job monitors as described in the Librato API.
+   * result wrappers for pagination and job monitors as described in the AppOptics API.
    *
    * The underlying request-promise and the given options may change several aspects of
    * this method, e.g. via resolveWithFullResponse: true or simple: false.

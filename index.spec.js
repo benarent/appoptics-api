@@ -27,11 +27,11 @@ describe('A default AppOpticsApi', () => {
   const appOpticsAPI = createInstanceWithTestEnv()
 
   it('should use the public appoptics REST URL', function * () {
-    expect(appOpticsAPI.serviceUrl).to.equal('https://api.appoptics.com/v1/metrics')
+    expect(appOpticsAPI.serviceUrl).to.equal('https://api.appoptics.com/v1')
   })
 
   it('should use auth credentials from environment', function * () {
-    expect(appOpticsAPI.auth).to.deep.equal({ pass: 'testtoken' })
+    expect(appOpticsAPI.auth).to.deep.equal({ 'user': '','pass': 'testtoken' })
   })
 
   it('should use the default request-promise', function * () {
@@ -46,7 +46,7 @@ describe('A default AppOpticsApi', () => {
     expect(AppOpticsAPI).to.be.an.instanceof(AppOpticsAPI.AppOpticsApi)
     expect(AppOpticsAPI).to.have.a.property('auth')
     expect(AppOpticsAPI).to.have.a.property('request', request)
-    expect(AppOpticsAPI).to.have.a.property('serviceUrl', 'https://api.appoptics.com/v1/metrics')
+    expect(AppOpticsAPI).to.have.a.property('serviceUrl', 'https://api.appoptics.com/v1')
     expect(AppOpticsAPI).to.have.a.property('logger', winston)
   })
 })
