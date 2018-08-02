@@ -11,49 +11,49 @@ chai.use(require('sinon-chai'))
 chai.use(require('chai-as-promised'))
 const expect = chai.expect
 
-const AppOpticsApi = require('./index')
+const AppOpticsAPI = require('./index')
 
 
 describe('A default AppOpticsApi', () => {
   function createInstanceWithTestEnv () {
     const orig = _.pickBy(_.negate(_.isUndefined), _.pickAll(['APPOPTICS_TOKEN'], process.env))
     process.env.APPOPTICS_TOKEN = 'testtoken'
-    const appoptics = new AppOpticsApi.AppOpticsApi()
+    const appoptics = new AppOpticsAPI.AppOpticsApi()
     delete process.env.APPOPTICS_TOKEN
     _.assign(process.env, orig)
     return appoptics
   }
 
-  const AppOpticsApi = createInstanceWithTestEnv()
+  const appOpticsAPI = createInstanceWithTestEnv()
 
   it('should use the public appoptics REST URL', function * () {
-    expect(AppOpticsApi.serviceUrl).to.equal('https://api.appoptics.com/v1/metrics')
+    expect(appOpticsAPI.serviceUrl).to.equal('https://api.appoptics.com/v1/metrics')
   })
 
   it('should use auth credentials from environment', function * () {
-    expect(AppOpticsApi.auth).to.deep.equal({ pass: 'testtoken' })
+    expect(appOpticsAPI.auth).to.deep.equal({ pass: 'testtoken' })
   })
 
   it('should use the default request-promise', function * () {
-    expect(AppOpticsApi.request).to.equal(request)
+    expect(appOpticsAPI.request).to.equal(request)
   })
 
   it('should log to winston root logger', function * () {
-    expect(AppOpticsApi.logger).to.equal(winston)
+    expect(appOpticsAPI.logger).to.equal(winston)
   })
 
   it('should be provided by the package itself', function * () {
-    expect(AppOpticsApi).to.be.an.instanceof(AppOpticsApi.AppOpticsApi)
-    expect(AppOpticsApi).to.have.a.property('auth')
-    expect(AppOpticsApi).to.have.a.property('request', request)
-    expect(AppOpticsApi).to.have.a.property('serviceUrl', 'https://api.appoptics.com/v1/metrics')
-    expect(AppOpticsApi).to.have.a.property('logger', winston)
+    expect(AppOpticsAPI).to.be.an.instanceof(AppOpticsAPI.AppOpticsApi)
+    expect(AppOpticsAPI).to.have.a.property('auth')
+    expect(AppOpticsAPI).to.have.a.property('request', request)
+    expect(AppOpticsAPI).to.have.a.property('serviceUrl', 'https://api.appoptics.com/v1/metrics')
+    expect(AppOpticsAPI).to.have.a.property('logger', winston)
   })
 })
 
 describe('AppOpticsApi.compositeDSL as $', () => {
   // eslint-disable-next-line no-unused-vars
-  const $ = AppOpticsApi.compositeDSL
+  const $ = AppOpticsAPI.compositeDSL
   const transformFunctions = [
     'abs', 'derive', 'divide', 'integrate', 'max', 'mean', 'min',
     'moving_average', 'multiply', 'rate', 'scale', 'subtract', 'sum', 'window'
@@ -147,9 +147,9 @@ describe('A test AppOpticsApi', () => {
 
   let AppOpticsApi
   beforeEach(function * () {
-    AppOpticsApi = new AppOpticsApi.AppOpticsApi({
+    AppOpticsApi = new AppOpticsAPI.AppOpticsApi({
       serviceUrl: 'http://url/v1',
-      auth: { user: 'testuser', pass: 'testtoken' },
+      auth: { pass: 'testtoken' },
       // reflect back request options in the result, maybe we should use sinon instead
       request: function () { return Promise.resolve(Array.from(arguments)) },
       logger: sinon.stub(new (winston.Logger)())
@@ -164,7 +164,7 @@ describe('A test AppOpticsApi', () => {
       const path = ['foo', 123, 'bar', 456]
       const options = { qs: { x: 'y' } }
       const expectedRequest = [{
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         qs: { x: 'y' },
         url: 'http://url/v1/foo/123/bar/456'
@@ -220,7 +220,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.getMetrics()
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/metrics'
       })
@@ -230,7 +230,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.getMetrics({ qs: { offset: 200, length: 50 } })
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/metrics',
         qs: { offset: 200, length: 50 }
@@ -245,7 +245,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.getMetric('test.metric')
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/metrics/test.metric'
       })
@@ -262,7 +262,7 @@ describe('A test AppOpticsApi', () => {
       )
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/metrics/test.metric',
         method: 'PUT',
@@ -274,7 +274,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.deleteMetric('test.metric')
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/metrics/test.metric',
         method: 'DELETE'
@@ -285,7 +285,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.getSpaces()
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/spaces'
       })
@@ -299,7 +299,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.getSpace(12345)
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/spaces/12345'
       })
@@ -309,7 +309,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.postSpace({ name: 'Test Space 1' })
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/spaces',
         method: 'POST',
@@ -321,7 +321,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.postSpace('Test Space 1')
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/spaces',
         method: 'POST',
@@ -333,7 +333,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.putSpace(12345, { name: 'Test Space 1a' })
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/spaces/12345',
         method: 'PUT',
@@ -345,7 +345,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.deleteSpace(12345)
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/spaces/12345',
         method: 'DELETE'
@@ -356,7 +356,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.getCharts(123)
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/spaces/123/charts'
       })
@@ -370,7 +370,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.getChart(123, 456)
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/spaces/123/charts/456'
       })
@@ -380,7 +380,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.postChart(123, { name: 'C1', x: 'y' })
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/spaces/123/charts',
         method: 'POST',
@@ -392,7 +392,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.putChart(123, 456, { name: 'C2' })
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/spaces/123/charts/456',
         method: 'PUT',
@@ -404,7 +404,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.deleteChart(123, 456)
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/spaces/123/charts/456',
         method: 'DELETE'
@@ -415,7 +415,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.getAlerts()
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/alerts'
       })
@@ -429,7 +429,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.getAlertsStatus()
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/alerts/status'
       })
@@ -439,7 +439,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.getAlert(12345)
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/alerts/12345'
       })
@@ -449,7 +449,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.postAlert({ name: 'Test Alert 1' })
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/alerts',
         method: 'POST',
@@ -461,7 +461,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.putAlert(12345, { name: 'Test Alert 1a' })
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/alerts/12345',
         method: 'PUT',
@@ -473,7 +473,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.deleteAlert(12345)
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/alerts/12345',
         method: 'DELETE'
@@ -484,7 +484,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.getServices()
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/services'
       })
@@ -498,7 +498,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.getService(12345)
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/services/12345'
       })
@@ -508,7 +508,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.postService({ title: 'Test Service 1' })
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/services',
         method: 'POST',
@@ -520,7 +520,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.putService(12345, { title: 'Test Service 1a' })
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/services/12345',
         method: 'PUT',
@@ -532,7 +532,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.deleteService(12345)
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/services/12345',
         method: 'DELETE'
@@ -543,7 +543,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.getSources()
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/sources'
       })
@@ -557,7 +557,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.getSource(12345)
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/sources/12345'
       })
@@ -567,7 +567,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.putSource(12345, { title: 'Test Source 1a' })
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/sources/12345',
         method: 'PUT',
@@ -579,7 +579,7 @@ describe('A test AppOpticsApi', () => {
       const r = yield AppOpticsApi.deleteSource(12345)
       expect(r).to.have.length(1)
       expect(r[0]).to.deep.equal({
-        auth: { user: 'testuser', pass: 'testtoken' },
+        auth: { pass: 'testtoken' },
         json: true,
         url: 'http://url/v1/sources/12345',
         method: 'DELETE'
